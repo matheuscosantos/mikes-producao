@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS idx_historico_producao_status_unico ON historico_producao_status (status, proximo_status);

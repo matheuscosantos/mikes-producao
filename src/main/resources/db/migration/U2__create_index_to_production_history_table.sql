@@ -1,0 +1,1 @@
+DROP INDEX idx_historico_producao_unico;

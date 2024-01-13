@@ -1,0 +1,1 @@
+DROP TABLE historico_producao;
