@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-alpine
+FROM amazoncorretto:21-alpine-jdk
 
 WORKDIR /app
 
