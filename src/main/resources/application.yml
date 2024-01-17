@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8085
 
 spring:
   datasource:
@@ -9,17 +9,18 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     database: POSTGRESQL
+
   sql:
     init:
       platform: postgres
   cloud:
     aws:
-      region: ${AWS_REGION}
-      endpoint: ${AWS_ENDPOINT_HOST}
+      region: ${AWS_REGION:sa-east-1}
+      endpoint: ${AWS_ENDPOINT_HOST:localhost}
       sqs:
-        queue-name: ${AWS_QUEUE_NAME}
+        queue-name: ${SQS_INIT_PRODUCTION_URL}
       sns:
-        topic-name: ${AWS_TOPIC_NAME}
+        topic-name: ${SNS_PRODUCTION_STATUS_CHANGED_ARN}
 management:
   endpoints:
     web:
