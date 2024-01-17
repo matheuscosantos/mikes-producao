@@ -27,18 +27,13 @@ class ProductionHistorySQSListener(
                     productionHistorySentMessenger.send(
                         ProductionHistorySentMessage(
                             orderId = createProductionHistory.orderId,
-                            status = "OK",
+                            status = createProductionHistory.status,
                         )
                     )
 
                     logger.info("Success to create production history: ${createProductionHistory.orderId}")
                 },
                 onFailure = {
-                    ProductionHistorySentMessage(
-                        orderId = createProductionHistory.orderId,
-                        status = "ERROR",
-                    )
-
                     logger.error("Failed to create production history: ${it.message}")
                 }
             )

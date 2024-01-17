@@ -43,10 +43,9 @@ class ProductionHistoryController(
     }
 
     private fun Result<ProductionHistory>.notification(orderId: String): Result<ProductionHistory> = onSuccess {
-        productionHistorySentMessenger.send(ProductionHistorySentMessage(orderId = orderId, status = "OK"))
+        productionHistorySentMessenger.send(ProductionHistorySentMessage(orderId = orderId, status = it.status.value))
         logger.info("Success to create production history: $orderId")
     }.onFailure {
-        productionHistorySentMessenger.send(ProductionHistorySentMessage(orderId = orderId, status = "ERROR"))
         logger.error("Failed to create production history: ${it.message}")
     }
 
