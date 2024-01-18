@@ -72,10 +72,21 @@ data "aws_sqs_queue" "sqs_queue_producao_pedido" {
   name = var.sqs_name_sqs_producao_pedido
 }
 
+data "aws_sns_topic" "sns_topic_pedido_confirmado" {
+  name = var.sns_name_pedido_confirmado
+}
+
 resource "aws_sns_topic_subscription" "sqs_producao_pedido_subscription_sns_status_producao" {
   topic_arn            = aws_sns_topic.sns_topic_status_producao_alterado.arn
   protocol             = "sqs"
   endpoint             = data.aws_sqs_queue.sqs_queue_producao_pedido.arn
+  raw_message_delivery = true
+}
+
+resource "aws_sns_topic_subscription" "sqs_iniciar_producao_subscription_sns_pedido_confirmado" {
+  topic_arn            = data.aws_sns_topic.sns_topic_pedido_confirmado.arn
+  protocol             = "sqs"
+  endpoint             = aws_sqs_queue.sqs_iniciar_producao.arn
   raw_message_delivery = true
 }
 
