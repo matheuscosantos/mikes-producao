@@ -23,6 +23,11 @@ variable "sns_name_status_producao_alterado" {
   default = "status_producao_alterado"
 }
 
+variable "sns_name_pedido_confirmado" {
+  type    = string
+  default = "pedido-confirmado"
+}
+
 variable "sqs_name_sqs_iniciar_producao" {
   type    = string
   default = "iniciar_producao"
