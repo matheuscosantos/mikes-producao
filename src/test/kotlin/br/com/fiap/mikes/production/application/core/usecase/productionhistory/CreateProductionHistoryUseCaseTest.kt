@@ -81,7 +81,7 @@ class CreateProductionHistoryUseCaseTest {
             val id = ProductionHistoryId.generate()
             val orderId = OrderId.new(UUID.randomUUID().toString()).getOrThrow()
 
-            val request = buildCreateProductionHistoryInboundRequest(status = "finished", orderId = orderId.value)
+            val request = buildCreateProductionHistoryInboundRequest(status = "FINISHED", orderId = orderId.value)
 
             every { productionHistoryMapper.new(any(), any(), any(), any(), any()) } returns buildProductionHistory(
                 id = id,
@@ -106,7 +106,7 @@ class CreateProductionHistoryUseCaseTest {
             val id = ProductionHistoryId.generate()
             val orderId = OrderId.new(UUID.randomUUID().toString()).getOrThrow()
 
-            val request = buildCreateProductionHistoryInboundRequest(status = "received", orderId = orderId.value)
+            val request = buildCreateProductionHistoryInboundRequest(status = "RECEIVED", orderId = orderId.value)
 
             every { productionHistoryMapper.new(any(), any(), any(), any(), any()) } returns buildProductionHistory(
                 id = id,
@@ -150,7 +150,7 @@ class CreateProductionHistoryUseCaseTest {
             val id = ProductionHistoryId.generate()
             val orderId = OrderId.new(UUID.randomUUID().toString()).getOrThrow()
 
-            val request = buildCreateProductionHistoryInboundRequest(status = "received", orderId = orderId.value)
+            val request = buildCreateProductionHistoryInboundRequest(status = "RECEIVED", orderId = orderId.value)
 
             every { productionHistoryMapper.new(any(), any(), any(), any(), any()) } returns buildProductionHistory(
                 id = id,
