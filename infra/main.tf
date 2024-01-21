@@ -126,7 +126,6 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     DB_PASSWORD                       = local.db_credentials["password"]
     SQS_INIT_PRODUCTION_URL           = aws_sqs_queue.sqs_iniciar_producao.arn
     SNS_PRODUCTION_STATUS_CHANGED_ARN = aws_sns_topic.sns_topic_status_producao_alterado.arn
-    REGION                            = var.region
     LOG_GROUP_NAME                    = aws_cloudwatch_log_group.ecs_log_group.name
   })
 }
@@ -142,11 +141,11 @@ data "aws_security_group" "security_group" {
 }
 
 data "aws_vpc" "vpc" {
-  id = "vpc-0ffc09ae69916058b"
+  id = var.vpc_id
 }
 
 data "aws_lb" "ecs_alb" {
-  name = "mikes-ecs-alb"
+  name = var.ecs_alb
 }
 
 resource "aws_lb_target_group" "lb_target_group_producao" {
@@ -155,6 +154,9 @@ resource "aws_lb_target_group" "lb_target_group_producao" {
   protocol = "HTTP"
   target_type = "ip"
   vpc_id   = data.aws_vpc.vpc.id
+  health_check {
+    path = "/actuator/health"
+  }
 }
 
 resource "aws_lb_listener" "lb_listener" {
