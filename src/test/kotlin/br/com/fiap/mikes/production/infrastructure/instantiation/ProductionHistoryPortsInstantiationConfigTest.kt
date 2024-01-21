@@ -2,7 +2,6 @@ package br.com.fiap.mikes.production.infrastructure.instantiation
 
 import br.com.fiap.mikes.production.adapter.outbound.database.ProductionHistoryDatabaseRepository
 import br.com.fiap.mikes.production.adapter.outbound.database.jpa.ProductHistoryJpaRepository
-import br.com.fiap.mikes.production.application.core.usecase.productionhistory.FindProductionHistoryByOrderUseCase
 import br.com.fiap.mikes.production.application.core.usecase.productionhistory.FindProductionHistoryLastByOrderUseCase
 import br.com.fiap.mikes.production.application.mapper.productionhistory.ProductionHistoryMapper
 import br.com.fiap.mikes.production.application.mapper.productionhistorystatus.DefaultProductionHistoryDomainMapper
@@ -35,14 +34,6 @@ class ProductionHistoryPortsInstantiationConfigTest {
             mockk<ProductionHistoryRepository>(),
             mockk<ValidateProductionHistoryStatusService>()
         ) shouldBeInstanceOf CreateProductionHistoryService::class
-    }
-
-    @Test
-    fun `findProductionHistoryByOrderService should return a FindProductionHistoryByOrderUseCase`() {
-        ProductionHistoryPortsInstantiationConfig().findProductionHistoryByOrderService(
-            mockk<ProductionHistoryMapper>(),
-            mockk<ProductionHistoryRepository>()
-        ) shouldBeInstanceOf FindProductionHistoryByOrderUseCase::class
     }
 
     @Test

@@ -1,22 +1,29 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kluentVersion: String by project
 val mockkVersion: String by project
+val kluentVersion: String by project
+val awsSdkVersion: String by project
+val cucumberVersion: String by project
+val restAssuredVersion: String by project
 val springCloudAwsVersion: String by project
+val testContainersVersion: String by project
+val kotlinxCoroutinesCoreVersion: String by project
 
 plugins {
-    id("java")
+    jacoco
+    application
+
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
-    id("org.graalvm.buildtools.native") version "0.9.28"
+    id("se.thinkcode.cucumber-runner") version "0.0.11"
 
     kotlin("jvm") version "1.9.21"
-    kotlin("plugin.spring") version "1.9.21"
     kotlin("plugin.jpa") version "1.9.21"
+    kotlin("plugin.spring") version "1.9.21"
     kotlin("plugin.allopen") version "1.9.21"
 }
 
-group = "br.com.fiap.mikes"
+group = "br.com.fiap.mikes.production"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -42,10 +49,24 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
 
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+
+    testImplementation("io.cucumber:cucumber-java:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
+
+    testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
+
+    testImplementation("org.testcontainers:localstack:$testContainersVersion")
+    testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
+
+    testImplementation("com.amazonaws:aws-java-sdk-sqs:$awsSdkVersion")
+    testImplementation("com.amazonaws:aws-java-sdk-sns:$awsSdkVersion")
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesCoreVersion")
 }
 
 tasks.withType<KotlinCompile> {
@@ -57,4 +78,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+cucumber {
+    main = "io.cucumber.core.cli.Main"
+    glue = "classpath:br.com.fiap.mikes.production.cucumber"
+    plugin = arrayOf("pretty", "html:build/reports/cucumber/index.html")
+    shorten = "manifest"
+    featurePath = "src/test/resources/cucumber/features"
 }

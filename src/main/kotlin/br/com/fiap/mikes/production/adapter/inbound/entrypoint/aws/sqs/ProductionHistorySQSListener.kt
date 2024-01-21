@@ -22,7 +22,7 @@ class ProductionHistorySQSListener(
             val createProductionHistory = jacksonObjectMapper()
                 .readValue(message, CreateProductionHistoryInboundRequest::class.java)
 
-            createProductionHistoryService.invoke(createProductionHistory).fold(
+            createProductionHistoryService(createProductionHistory).fold(
                 onSuccess = {
                     productionHistorySentMessenger.send(
                         ProductionHistorySentMessage(

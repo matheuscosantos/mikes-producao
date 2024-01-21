@@ -1,16 +1,18 @@
 package br.com.fiap.mikes.production.infrastructure.configuration
 
-import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory
+import io.awspring.cloud.sns.core.TopicArnResolver
+import io.awspring.cloud.sns.core.TopicsListingTopicArnResolver
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.sqs.SqsAsyncClient
+import software.amazon.awssdk.services.sns.SnsClient
 import java.net.URI
 
+
 @Configuration
-class SQSConfiguration {
+class SnsConfiguration {
 
     @Value("\${spring.cloud.aws.region}")
     private lateinit var region: String
@@ -20,24 +22,21 @@ class SQSConfiguration {
 
     @Bean
     @Profile("local")
-    fun sqsAsyncClientLocal(): SqsAsyncClient {
-        return SqsAsyncClient.builder()
+    fun snsClientLocal(): SnsClient {
+        return SnsClient.builder()
             .endpointOverride(URI.create(endpoint))
             .region(Region.of(region))
             .build()
     }
 
     @Bean
-    @Profile("!local")
-    fun sqsAsyncClientCloud(): SqsAsyncClient {
-        return SqsAsyncClient.builder().build()
+    @Profile("!local && !test")
+    fun snsClientCloud(): SnsClient {
+        return SnsClient.builder().build()
     }
 
     @Bean
-    fun defaultSqsListenerContainerFactory(sqsAsyncClient: SqsAsyncClient): SqsMessageListenerContainerFactory<Any> {
-        return SqsMessageListenerContainerFactory
-            .builder<Any>()
-            .sqsAsyncClient(sqsAsyncClient)
-            .build()
+    fun topicArnResolver(snsClient: SnsClient): TopicArnResolver {
+        return TopicsListingTopicArnResolver(snsClient)
     }
 }
