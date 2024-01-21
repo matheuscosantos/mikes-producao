@@ -141,8 +141,15 @@ data "aws_security_group" "security_group" {
   name = "${var.infra_name}_security_group"
 }
 
-data "aws_lb_target_group" "lb_target_group" {
-  name = "${var.infra_name}-lb-target-group"
+data "aws_vpc" "vpc" {
+  id = "vpc-0ffc09ae69916058b"
+}
+
+resource "aws_lb_target_group" "lb_target_group_producao" {
+  name     = "${var.name}-lb-target-group-producao"
+  port     = 8085
+  protocol = "HTTP"
+  vpc_id   = data.aws_vpc.vpc.id
 }
 
 resource "aws_ecs_service" "ecs_service" {
@@ -157,7 +164,7 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = data.aws_lb_target_group.lb_target_group.arn
+    target_group_arn = aws_lb_target_group.lb_target_group_producao.arn
     container_name   = "${var.name}-container"
     container_port   = 8085
   }
