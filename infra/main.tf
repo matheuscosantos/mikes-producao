@@ -145,12 +145,27 @@ data "aws_vpc" "vpc" {
   id = "vpc-0ffc09ae69916058b"
 }
 
+data "aws_lb" "ecs_alb" {
+  name = "mikes-ecs-alb"
+}
+
 resource "aws_lb_target_group" "lb_target_group_producao" {
   name     = "${var.name}-lb-tg-producao"
   port     = 8085
   protocol = "HTTP"
   target_type = "ip"
   vpc_id   = data.aws_vpc.vpc.id
+}
+
+resource "aws_lb_listener" "lb_listener" {
+  load_balancer_arn = data.aws_lb.ecs_alb.arn
+  port              = 8085
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lb_target_group_producao.arn
+  }
 }
 
 resource "aws_ecs_service" "ecs_service" {
