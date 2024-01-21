@@ -80,6 +80,24 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        csv.required = false
+        xml.required = false
+        html.required = true
+    }
+}
+
 cucumber {
     main = "io.cucumber.core.cli.Main"
     glue = "classpath:br.com.fiap.mikes.production.cucumber"
