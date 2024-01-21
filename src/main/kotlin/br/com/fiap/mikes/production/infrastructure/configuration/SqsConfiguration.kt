@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import java.net.URI
 
 @Configuration
@@ -19,8 +19,8 @@ class SqsConfiguration {
 
     @Bean
     @Profile("local")
-    fun sqsClientLocal(): SqsClient {
-        return SqsClient.builder()
+    fun sqsAsysnClientLocal(): SqsAsyncClient {
+        return SqsAsyncClient.builder()
             .endpointOverride(URI.create(endpoint))
             .region(Region.of(region))
             .build()
@@ -28,7 +28,7 @@ class SqsConfiguration {
 
     @Bean
     @Profile("!local && !test")
-    fun sqsClientCloud(): SqsClient {
-        return SqsClient.builder().build()
+    fun sqsAsysnClientCloud(): SqsAsyncClient {
+        return SqsAsyncClient.builder().build()
     }
 }
