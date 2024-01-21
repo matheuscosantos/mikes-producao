@@ -146,7 +146,7 @@ data "aws_vpc" "vpc" {
 }
 
 resource "aws_lb_target_group" "lb_target_group_producao" {
-  name     = "${var.name}-lb-target-group-producao"
+  name     = "${var.name}-lb-tg-producao"
   port     = 8085
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.vpc.id
