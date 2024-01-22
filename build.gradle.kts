@@ -57,6 +57,7 @@ dependencies {
 
     testImplementation("io.cucumber:cucumber-java")
     testImplementation("io.cucumber:cucumber-spring")
+    testImplementation("io.cucumber:cucumber-core")
 
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
