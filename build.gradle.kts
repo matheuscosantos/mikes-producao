@@ -15,7 +15,7 @@ plugins {
 
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
-    id("se.thinkcode.cucumber-runner") version "0.0.11"
+    //id("se.thinkcode.cucumber-runner") version "0.0.11"
 
     kotlin("jvm") version "1.9.21"
     kotlin("plugin.jpa") version "1.9.21"
@@ -102,10 +102,35 @@ tasks.jacocoTestReport {
     }
 }
 
-cucumber {
-    main = "io.cucumber.core.cli.Main"
-    glue = "classpath:br.com.fiap.mikes.production.cucumber"
-    plugin = arrayOf("pretty", "html:build/reports/cucumber/index.html")
-    shorten = "manifest"
-    featurePath = "src/test/resources/cucumber/features"
+configurations {
+    val cucumberRuntime by creating {
+        extendsFrom(
+            configurations.testImplementation.get(),
+            configurations.implementation.get(),
+            configurations.runtimeOnly.get()
+        )
+    }
 }
+
+task("cucumber") {
+    dependsOn("assemble", "testClasses")
+    doLast {
+        javaexec {
+            mainClass = "io.cucumber.core.cli.Main"
+            classpath = configurations["cucumberRuntime"] + sourceSets.main.get().output + sourceSets.test.get().output
+            args = listOf(
+                "--plugin", "pretty",
+                "--glue", "classpath:br.com.fiap.mikes.production.cucumber",
+                "src/test/resources/cucumber/features"
+            )
+        }
+    }
+}
+
+//cucumber {
+//    main = "io.cucumber.core.cli.Main"
+//    glue = "classpath:br.com.fiap.mikes.production.cucumber"
+//    plugin = arrayOf("pretty", "html:build/reports/cucumber/index.html")
+//    shorten = "manifest"
+//    featurePath = "src/test/resources/cucumber/features"
+//}
