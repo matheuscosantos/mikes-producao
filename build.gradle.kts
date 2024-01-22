@@ -51,12 +51,15 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2")
 
+    testImplementation(platform("io.cucumber:cucumber-bom:$cucumberVersion"))
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testImplementation("io.cucumber:cucumber-java")
+    testImplementation("io.cucumber:cucumber-spring")
+
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
-
-    testImplementation("io.cucumber:cucumber-java:$cucumberVersion")
-    testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
 
     testImplementation("io.rest-assured:rest-assured:$restAssuredVersion")
 
