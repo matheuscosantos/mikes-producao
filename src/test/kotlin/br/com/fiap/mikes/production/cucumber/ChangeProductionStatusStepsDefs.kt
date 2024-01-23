@@ -4,6 +4,7 @@ import br.com.fiap.mikes.production.adapter.outbound.database.entity.ProductHist
 import br.com.fiap.mikes.production.cucumber.config.RestAssuredExtension
 import io.cucumber.java.After
 import io.cucumber.java.Before
+import io.cucumber.java.Scenario
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.restassured.RestAssured
@@ -17,14 +18,14 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
 
     private lateinit var response: ResponseOptions<Response>
 
-    private lateinit var status: String
-    private lateinit var orderId: String
+    private var status: String = ""
+    private var orderId: String = ""
 
-    private lateinit var topicArn: String
-    private lateinit var queueUrlReceivedStatus: String
+    private var topicArn: String = ""
+    private var queueUrlReceivedStatus: String = ""
 
     @Before(value = "@ChangeProductionStatus")
-    fun setup() {
+    fun setup(scenario: Scenario) {
         RestAssured.baseURI = "http://localhost:$port"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
@@ -33,7 +34,10 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
         val createTopicResponse = snsClient.createTopic { it.name(topicName) }
         topicArn = createTopicResponse.topicArn()
 
-        val createQueueResponseReceivedStatus = sqsClient.createQueue { it.queueName(receivedStatusQueueName) }
+        val createQueueResponseReceivedStatus = sqsClient.createQueue {
+            it.queueName(receivedStatusQueueName)
+        }
+
         queueUrlReceivedStatus = createQueueResponseReceivedStatus.queueUrl()
 
         val queueAttributesResponse =
@@ -50,9 +54,9 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
     }
 
     @After(value = "@ChangeProductionStatus")
-    fun setupAll() {
+    fun setupAll(scenario: Scenario) {
         snsClient.deleteTopic { it.topicArn(topicArn) }
-        sqsClient.purgeQueue { it.queueUrl(queueUrlReceivedStatus) }
+        sqsClient.deleteQueue { it.queueUrl(queueUrlReceivedStatus) }
     }
 
     @Given("que a alteração do status da produção é recebido com o id do pedido inválido")

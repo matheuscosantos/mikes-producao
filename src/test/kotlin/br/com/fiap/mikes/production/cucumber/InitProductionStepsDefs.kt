@@ -3,6 +3,7 @@ package br.com.fiap.mikes.production.cucumber
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.cucumber.java.After
 import io.cucumber.java.Before
+import io.cucumber.java.Scenario
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.restassured.RestAssured
@@ -13,15 +14,15 @@ import org.amshove.kluent.`should not be null`
 
 class InitProductionStepsDefs : CucumberTest() {
 
-    private lateinit var status: String
-    private lateinit var orderId: String
+    private var status: String = ""
+    private var orderId: String = ""
 
-    private lateinit var topicArn: String
-    private lateinit var queueUrlListenerQueue: String
-    private lateinit var queueUrlReceivedStatus: String
+    private var topicArn: String = ""
+    private var queueUrlListenerQueue: String = ""
+    private var queueUrlReceivedStatus: String = ""
 
     @Before(value = "@InitProduction")
-    fun setupBefore() {
+    fun setupBefore(scenario: Scenario) {
         RestAssured.baseURI = "http://localhost:$port"
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails()
 
@@ -30,10 +31,15 @@ class InitProductionStepsDefs : CucumberTest() {
         val createTopicResponse = snsClient.createTopic { it.name(topicName) }
         topicArn = createTopicResponse.topicArn()
 
-        val createQueueResponseListenerQueue = sqsClient.createQueue { it.queueName(listenerQueueName) }
+        val createQueueResponseListenerQueue = sqsClient.createQueue {
+            it.queueName(listenerQueueName)
+        }
         queueUrlListenerQueue = createQueueResponseListenerQueue.queueUrl()
 
-        val createQueueResponseReceivedStatusQueue = sqsClient.createQueue { it.queueName(receivedStatusQueueName) }
+        val createQueueResponseReceivedStatusQueue = sqsClient.createQueue {
+            it.queueName(receivedStatusQueueName)
+        }
+
         queueUrlReceivedStatus = createQueueResponseReceivedStatusQueue.queueUrl()
 
         val queueAttributesResponseReceivedStatus =
@@ -50,10 +56,10 @@ class InitProductionStepsDefs : CucumberTest() {
     }
 
     @After(value = "@InitProduction")
-    fun setupAfter() {
+    fun setupAfter(scenario: Scenario) {
         snsClient.deleteTopic { it.topicArn(topicArn) }
-        sqsClient.purgeQueue { it.queueUrl(queueUrlListenerQueue) }
-        sqsClient.purgeQueue { it.queueUrl(queueUrlReceivedStatus) }
+        sqsClient.deleteQueue { it.queueUrl(queueUrlListenerQueue) }
+        sqsClient.deleteQueue { it.queueUrl(queueUrlReceivedStatus) }
     }
 
     @Given("que o processo da produção é iniciado com o id do pedido inválido")
