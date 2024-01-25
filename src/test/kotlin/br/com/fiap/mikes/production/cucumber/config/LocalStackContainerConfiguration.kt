@@ -22,8 +22,8 @@ class LocalStackContainerConfiguration {
 
         localStackContainer.start()
 //
-//        System.setProperty("spring.cloud.aws.credentials.access-key", localStackContainer.accessKey)
-//        System.setProperty("spring.cloud.aws.credentials.secret-key", localStackContainer.secretKey)
+        System.setProperty("spring.cloud.aws.credentials.access-key", localStackContainer.accessKey)
+        System.setProperty("spring.cloud.aws.credentials.secret-key", localStackContainer.secretKey)
 
         logger.info("LocalStackContainer access-key: ${localStackContainer.accessKey}")
         logger.info("LocalStackContainer secret-key: ${localStackContainer.secretKey}")
