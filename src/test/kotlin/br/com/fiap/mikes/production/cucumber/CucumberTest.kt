@@ -3,7 +3,6 @@ package br.com.fiap.mikes.production.cucumber
 import br.com.fiap.mikes.production.ProductionApplication
 import br.com.fiap.mikes.production.adapter.outbound.database.jpa.ProductHistoryJpaRepository
 import io.cucumber.spring.CucumberContextConfiguration
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -44,12 +43,6 @@ class CucumberTest {
     internal var queueUrlReceivedStatus: String = ""
 
     fun createResources() {
-        val accessKey = System.getProperty("spring.cloud.aws.credentials.access-key")
-        val secretKey = System.getProperty("spring.cloud.aws.credentials.secret-key")
-
-        logger.info("Propertie access-key: $accessKey")
-        logger.info("Propertie secret-key: $secretKey")
-
         topicArn = snsClient.createTopic { it.name(topicName) }.topicArn()
 
         queueUrlListenerQueue = sqsClient.getQueueUrl { it.queueName(listenerQueueName) }.queueUrl()
@@ -70,9 +63,5 @@ class CucumberTest {
     fun deleteResources() {
         snsClient.deleteTopic { it.topicArn(topicArn) }
         sqsClient.deleteQueue { it.queueUrl(queueUrlReceivedStatus) }
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(CucumberTest::class.java)
     }
 }
