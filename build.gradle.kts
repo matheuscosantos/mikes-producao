@@ -124,6 +124,16 @@ task("cucumber") {
 }
 
 sonar {
+
+    val exclusions = listOf(
+        "**/Application.kt",
+        "**/AWSConfiguration*",
+        "**/ProductionHistoryMapper*",
+        "**/ProductionHistoryStatusMapper*",
+        "**/DefaultProductionHistoryDomainMapper*",
+        "**/DefaultProductionHistoryStatusDomainMapper*"
+    )
+
     properties {
         property("sonar.projectKey", "matheuscosantos_mikes-producao")
         property("sonar.organization", "matheuscosantos")
@@ -131,5 +141,6 @@ sonar {
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.gradle.skipCompile", "true")
+        property("sonar.coverage.exclusions", "**/AWSConfiguration*,**/Application.kt")
     }
 }
