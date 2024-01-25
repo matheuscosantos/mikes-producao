@@ -50,7 +50,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests
-        run: ./gradlew cucumber
+        run: ./gradlew behaviorTest
 
   build:
     needs: [ behavior-tests ]

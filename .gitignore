@@ -1,6 +1,8 @@
 HELP.md
 .gradle
 .localstack/
+data/
+data/**
 build/
 target/
 !gradle/wrapper/gradle-wrapper.jar
