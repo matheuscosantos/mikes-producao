@@ -33,12 +33,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: test
-          aws-secret-access-key: test
-          aws-region: us-east-1
+      - name: Set up AWS Credentials
+        run: |
+          mkdir -p $HOME/.aws
+          echo "[default]" > $HOME/.aws/credentials
+          echo "aws_access_key_id=test" >> $HOME/.aws/credentials
+          echo "aws_secret_access_key=test" >> $HOME/.aws/credentials
 
       - name: Set up Java
         uses: actions/setup-java@v3
