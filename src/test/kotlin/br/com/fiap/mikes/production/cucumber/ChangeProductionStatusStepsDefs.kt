@@ -12,6 +12,7 @@ import io.restassured.response.Response
 import io.restassured.response.ResponseOptions
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should not be null`
+import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
 class ChangeProductionStatusStepsDefs : CucumberTest() {
@@ -29,6 +30,12 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
         repository.deleteAll()
 
         createResources()
+
+        val accessKey = System.getProperty("spring.cloud.aws.credentials.access-key")
+        val secretKey = System.getProperty("spring.cloud.aws.credentials.secret-key")
+
+        logger.info("Propertie access-key: $accessKey")
+        logger.info("Propertie secret-key: $secretKey")
     }
 
     @After(value = "@ChangeProductionStatus")
@@ -122,4 +129,8 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
         LocalDateTime.now(),
         LocalDateTime.now()
     )
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(ChangeProductionStatusStepsDefs::class.java)
+    }
 }
