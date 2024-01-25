@@ -93,9 +93,8 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test)
 
     reports {
-        csv.required = false
-        xml.required = false
         html.required = true
+        xml.required = true
     }
 }
 
@@ -128,6 +127,9 @@ sonar {
     properties {
         property("sonar.projectKey", "matheuscosantos_mikes-producao")
         property("sonar.organization", "matheuscosantos")
+        property("sonar.junit.reportPaths", "build/test-results/test")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.gradle.skipCompile", "true")
     }
 }
