@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew test
 
   behavior-tests:
-    needs: [unit-tests]
+    needs: [ unit-tests ]
     runs-on: ubuntu-latest
 
     steps:
@@ -53,7 +53,7 @@ jobs:
         run: ./gradlew cucumber
 
   build:
-    needs: [behavior-tests]
+    needs: [ behavior-tests ]
     runs-on: ubuntu-latest
 
     steps:
@@ -89,7 +89,7 @@ jobs:
         run: docker push 644237782704.dkr.ecr.us-east-2.amazonaws.com/mikes_producao:latest
 
   sonar:
-    needs: [build]
+    needs: [ build ]
     runs-on: ubuntu-latest
 
     steps:
@@ -120,7 +120,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Analyze with SonarCloud
-        run: ./gradlew sonar --info
+        run: ./gradlew sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
