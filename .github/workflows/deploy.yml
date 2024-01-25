@@ -120,7 +120,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Analyze with SonarCloud
-        run: ./gradlew sonar --info
+        run: ./gradlew sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
