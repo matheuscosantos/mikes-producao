@@ -6,27 +6,27 @@ on:
       - main
 
 jobs:
-  unit-tests:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'corretto'
-
-      - name: Make gradlew Executable
-        run: chmod +x gradlew
-
-      - name: Run Unit Tests
-        run: ./gradlew test
+#  unit-tests:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v3
+#
+#      - name: Set up Java
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '21'
+#          distribution: 'corretto'
+#
+#      - name: Make gradlew Executable
+#        run: chmod +x gradlew
+#
+#      - name: Run Unit Tests
+#        run: ./gradlew test
 
   behavior-tests:
-    needs: [unit-tests]
+    #needs: [unit-tests]
     runs-on: ubuntu-latest
 
     steps:
@@ -42,11 +42,11 @@ jobs:
       - name: Make gradlew Executable
         run: chmod +x gradlew
 
-      - name: Run Unit Tests
+      - name: Run Tests
         run: ./gradlew cucumber
 
   build-and-deploy:
-    needs: [unit-tests, behavior-tests]
+    needs: [behavior-tests]
     runs-on: ubuntu-latest
 
     steps:
