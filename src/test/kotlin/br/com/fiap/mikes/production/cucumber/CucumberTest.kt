@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sqs.model.QueueAttributeName
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = [ProductionApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,4 +37,31 @@ class CucumberTest {
 
     @Value("\${spring.cloud.aws.sns.topic-name}")
     internal lateinit var topicName: String
+
+    internal var topicArn: String = ""
+    internal var queueUrlListenerQueue: String = ""
+    internal var queueUrlReceivedStatus: String = ""
+
+    fun createResources() {
+        topicArn = snsClient.createTopic { it.name(topicName) }.topicArn()
+
+        queueUrlListenerQueue = sqsClient.getQueueUrl { it.queueName(listenerQueueName) }.queueUrl()
+
+        queueUrlReceivedStatus = sqsClient.createQueue {
+            it.queueName(receivedStatusQueueName).attributes(mapOf(QueueAttributeName.MAXIMUM_MESSAGE_SIZE to "256"))
+        }.queueUrl()
+
+        val queueArn = sqsClient.getQueueAttributes {
+            it.queueUrl(queueUrlReceivedStatus).attributeNamesWithStrings("QueueArn")
+        }.attributesAsStrings()["QueueArn"]
+
+        snsClient.subscribe {
+            it.topicArn(topicArn).protocol("sqs").endpoint(queueArn).attributes(mapOf("RawMessageDelivery" to "true"))
+        }
+    }
+
+    fun deleteResources() {
+        snsClient.deleteTopic { it.topicArn(topicArn) }
+        sqsClient.deleteQueue { it.queueUrl(queueUrlReceivedStatus) }
+    }
 }
