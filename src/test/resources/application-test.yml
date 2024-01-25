@@ -9,6 +9,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   cloud:
     aws:
+      credentials:
+        access-key: "test"
+        secret-key: "test"
       sqs:
         queue-name: "init-production"
         queue-name2: "status-changed"

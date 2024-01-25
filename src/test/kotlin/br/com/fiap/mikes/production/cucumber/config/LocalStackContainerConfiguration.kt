@@ -20,6 +20,9 @@ class LocalStackContainerConfiguration {
             .withServices(LocalStackContainer.Service.SNS, LocalStackContainer.Service.SQS)
 
         localStackContainer.start()
+//
+//        System.setProperty("spring.cloud.aws.credentials.access-key", localStackContainer.accessKey)
+//        System.setProperty("spring.cloud.aws.credentials.secret-key", localStackContainer.secretKey)
 
         return localStackContainer
     }
