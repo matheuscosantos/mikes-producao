@@ -69,9 +69,6 @@ dependencies {
     testImplementation("org.testcontainers:localstack:$testContainersVersion")
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
 
-    testImplementation("com.amazonaws:aws-java-sdk-sqs:$awsSdkVersion")
-    testImplementation("com.amazonaws:aws-java-sdk-sns:$awsSdkVersion")
-
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesCoreVersion")
 }
 
