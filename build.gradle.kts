@@ -21,6 +21,8 @@ plugins {
     kotlin("plugin.jpa") version "1.9.21"
     kotlin("plugin.spring") version "1.9.21"
     kotlin("plugin.allopen") version "1.9.21"
+    id("org.sonarqube") version "4.4.1.3373"
+
 }
 
 group = "br.com.fiap.mikes.production"
@@ -124,6 +126,14 @@ task("cucumber") {
                 "src/test/resources/cucumber/features"
             )
         }
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "matheuscosantos_mikes-producao")
+        property("sonar.organization", "matheuscosantos")
+        property("sonar.host.url", "https://sonarcloud.io")
     }
 }
 
