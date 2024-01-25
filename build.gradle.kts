@@ -141,6 +141,6 @@ sonar {
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.gradle.skipCompile", "true")
-        property("sonar.coverage.exclusions", "**/AWSConfiguration*,**/Application.kt")
+        property("sonar.coverage.exclusions", exclusions)
     }
 }
