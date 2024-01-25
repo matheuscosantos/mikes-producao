@@ -21,9 +21,6 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
     private var status: String = ""
     private var orderId: String = ""
 
-    private var topicArn: String = ""
-    private var queueUrlReceivedStatus: String = ""
-
     @Before(value = "@ChangeProductionStatus")
     fun setup(scenario: Scenario) {
         RestAssured.baseURI = "http://localhost:$port"
@@ -31,32 +28,12 @@ class ChangeProductionStatusStepsDefs : CucumberTest() {
 
         repository.deleteAll()
 
-        val createTopicResponse = snsClient.createTopic { it.name(topicName) }
-        topicArn = createTopicResponse.topicArn()
-
-        val createQueueResponseReceivedStatus = sqsClient.createQueue {
-            it.queueName(receivedStatusQueueName)
-        }
-
-        queueUrlReceivedStatus = createQueueResponseReceivedStatus.queueUrl()
-
-        val queueAttributesResponse =
-            sqsClient.getQueueAttributes { it.queueUrl(queueUrlReceivedStatus).attributeNamesWithStrings("QueueArn") }
-        val queueArn: String? = queueAttributesResponse.attributesAsStrings()["QueueArn"]
-
-        snsClient.subscribe {
-            it.topicArn(topicArn).protocol("sqs").endpoint(queueArn).attributes(
-                mapOf(
-                    "RawMessageDelivery" to "true"
-                )
-            )
-        }
+        createResources()
     }
 
     @After(value = "@ChangeProductionStatus")
     fun setupAll(scenario: Scenario) {
-        snsClient.deleteTopic { it.topicArn(topicArn) }
-        sqsClient.deleteQueue { it.queueUrl(queueUrlReceivedStatus) }
+        deleteResources()
     }
 
     @Given("que a alteração do status da produção é recebido com o id do pedido inválido")
