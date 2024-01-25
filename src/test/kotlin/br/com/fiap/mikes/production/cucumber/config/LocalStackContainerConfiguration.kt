@@ -21,7 +21,7 @@ class LocalStackContainerConfiguration {
             .withServices(LocalStackContainer.Service.SNS, LocalStackContainer.Service.SQS)
 
         localStackContainer.start()
-//
+
         System.setProperty("aws.accessKeyId", localStackContainer.accessKey)
         System.setProperty("aws.accessKeyId", localStackContainer.secretKey)
 
