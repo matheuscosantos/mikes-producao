@@ -1,8 +1,19 @@
 version: "3.8"
 services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+
   localstack:
     image: localstack/localstack
-    network_mode: bridge
+    container_name: localstack
     ports:
       - "4566-4583:4566-4583"
     environment:
@@ -22,3 +33,26 @@ services:
     volumes:
       - "${TMPDIR:-/tmp}/teste/localstack:/tmp/teste/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - "8085:8085"
+    depends_on:
+      - db
+      - localstack
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: mysecretpassword
+      AWS_REGION: sa-east-1
+      AWS_ENDPOINT_HOST: http://localstack:4566
+      SQS_INIT_PRODUCTION_URL: local-queue
+      SNS_PRODUCTION_STATUS_CHANGED_ARN: local-topic
+      AWS_ACCESS_KEY_ID: asdf
+      AWS_SECRET_ACCESS_KEY: asdf
+      SPRING_PROFILES_ACTIVE: local

@@ -108,7 +108,7 @@ configurations {
     }
 }
 
-task("cucumber") {
+task("behaviorTest") {
     dependsOn("assemble", "testClasses")
     doLast {
         javaexec {
