@@ -1,5 +1,6 @@
 package br.com.fiap.mikes.production.cucumber.config
 
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -23,6 +24,9 @@ class LocalStackContainerConfiguration {
 //
 //        System.setProperty("spring.cloud.aws.credentials.access-key", localStackContainer.accessKey)
 //        System.setProperty("spring.cloud.aws.credentials.secret-key", localStackContainer.secretKey)
+
+        logger.info("LocalStackContainer access-key: ${localStackContainer.accessKey}")
+        logger.info("LocalStackContainer secret-key: ${localStackContainer.secretKey}")
 
         return localStackContainer
     }
@@ -63,5 +67,9 @@ class LocalStackContainerConfiguration {
                 )
             }
             .build()
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(LocalStackContainerConfiguration::class.java)
     }
 }
