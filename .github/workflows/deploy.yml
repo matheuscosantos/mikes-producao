@@ -6,27 +6,27 @@ on:
       - main
 
 jobs:
-#  unit-tests:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Java
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '21'
-#          distribution: 'corretto'
-#
-#      - name: Make gradlew Executable
-#        run: chmod +x gradlew
-#
-#      - name: Run Unit Tests
-#        run: ./gradlew test
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Make gradlew Executable
+        run: chmod +x gradlew
+
+      - name: Run Unit Tests
+        run: ./gradlew test
 
   behavior-tests:
-    #needs: [unit-tests]
+    needs: [unit-tests]
     runs-on: ubuntu-latest
 
     steps:
@@ -52,7 +52,7 @@ jobs:
       - name: Run Tests
         run: ./gradlew cucumber
 
-  build-and-deploy:
+  build:
     needs: [behavior-tests]
     runs-on: ubuntu-latest
 
@@ -79,6 +79,20 @@ jobs:
       - name: Build Gradle Project
         run: ./gradlew build -x test
 
+      - name: Authenticate with ECR
+        run: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 644237782704.dkr.ecr.us-east-2.amazonaws.com
+
+      - name: Build Docker Image
+        run: docker build -t 644237782704.dkr.ecr.us-east-2.amazonaws.com/mikes_producao:latest .
+
+      - name: Push Docker Image to ECR Registry
+        run: docker push 644237782704.dkr.ecr.us-east-2.amazonaws.com/mikes_producao:latest
+
+  sonar:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -93,20 +107,26 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      - name: Build and analyze
+      - name: Analyze with SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --info
+        run: ./gradlew sonar --info
 
-      - name: Authenticate with ECR
-        run: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 644237782704.dkr.ecr.us-east-2.amazonaws.com
+  deploy:
+    needs: [ sonar ]
+    runs-on: ubuntu-latest
 
-      - name: Build Docker Image
-        run: docker build -t 644237782704.dkr.ecr.us-east-2.amazonaws.com/mikes_producao:latest .
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Push Docker Image to ECR Registry
-        run: docker push 644237782704.dkr.ecr.us-east-2.amazonaws.com/mikes_producao:latest
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3

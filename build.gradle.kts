@@ -15,14 +15,12 @@ plugins {
 
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
-    //id("se.thinkcode.cucumber-runner") version "0.0.11"
+    id("org.sonarqube") version "4.4.1.3373"
 
     kotlin("jvm") version "1.9.21"
     kotlin("plugin.jpa") version "1.9.21"
     kotlin("plugin.spring") version "1.9.21"
     kotlin("plugin.allopen") version "1.9.21"
-    id("org.sonarqube") version "4.4.1.3373"
-
 }
 
 group = "br.com.fiap.mikes.production"
@@ -133,11 +131,3 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
     }
 }
-
-//cucumber {
-//    main = "io.cucumber.core.cli.Main"
-//    glue = "classpath:br.com.fiap.mikes.production.cucumber"
-//    plugin = arrayOf("pretty", "html:build/reports/cucumber/index.html")
-//    shorten = "manifest"
-//    featurePath = "src/test/resources/cucumber/features"
-//}
