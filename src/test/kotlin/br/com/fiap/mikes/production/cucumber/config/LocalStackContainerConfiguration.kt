@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.testcontainers.containers.localstack.LocalStackContainer
 import org.testcontainers.utility.DockerImageName
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
@@ -38,6 +39,12 @@ class LocalStackContainerConfiguration {
         return SqsClient.builder()
             .endpointOverride(localStackContainer.getEndpointOverride(LocalStackContainer.Service.SQS))
             .region(Region.of(localStackContainer.region))
+            .credentialsProvider {
+                AwsBasicCredentials.create(
+                    localStackContainer.accessKey,
+                    localStackContainer.secretKey
+                )
+            }
             .build()
     }
 
@@ -46,6 +53,12 @@ class LocalStackContainerConfiguration {
         return SqsAsyncClient.builder()
             .endpointOverride(localStackContainer.getEndpointOverride(LocalStackContainer.Service.SQS))
             .region(Region.of(localStackContainer.region))
+            .credentialsProvider {
+                AwsBasicCredentials.create(
+                    localStackContainer.accessKey,
+                    localStackContainer.secretKey
+                )
+            }
             .build()
     }
 }
