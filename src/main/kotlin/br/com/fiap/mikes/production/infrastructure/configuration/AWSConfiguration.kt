@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
+import software.amazon.awssdk.services.sqs.SqsAsyncClient
 import software.amazon.awssdk.services.sqs.SqsClient
 import java.net.URI
 
@@ -33,6 +34,12 @@ class AWSConfiguration {
     @Profile("!local && !test")
     fun sqsClientCloud(): SqsClient {
         return SqsClient.builder().build()
+    }
+
+    @Bean
+    @Profile("!local && !test")
+    fun sqsAsyncClientCloud(): SqsAsyncClient {
+        return SqsAsyncClient.builder().build()
     }
 
     @Bean
