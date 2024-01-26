@@ -26,8 +26,8 @@ class ProductionHistorySQSListener(
                 onSuccess = {
                     productionHistorySentMessenger.send(
                         ProductionHistorySentMessage(
-                            orderId = createProductionHistory.orderId,
-                            status = createProductionHistory.status,
+                            orderId = it.orderId.value,
+                            status = it.status.value,
                         )
                     )
 
