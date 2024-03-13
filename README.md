@@ -86,3 +86,16 @@ curl --request POST \
 	"status": "PREPARING"
 }'
 ````
+
+## Padrão SAGA Coreografado
+
+O padrão Saga Coreografado foi utilizado no projeto pois é usado em aplicações distribuídas e microserviços para garantir a consistência em transações que envolvem múltiplos serviços. Nesse padrão, cada serviço envolvido em uma transação realiza uma parte da operação e emite eventos para indicar seu estado. Outros serviços ou um coordenador monitoram esses eventos e coordenam as operações para garantir que a transação seja concluída com sucesso ou revertida de forma consistente.
+
+Existem várias razões para usar o padrão Saga Coreografado em aplicações como as descritas nos repositórios do projeto "Mikes":
+
+Consistência distribuída: Como as transações envolvem vários serviços, é importante garantir que eles estejam em um estado consistente, mesmo em caso de falhas.
+Escalabilidade e desempenho: O padrão permite que as operações sejam distribuídas entre vários serviços, melhorando a escalabilidade e o desempenho do sistema.
+Resiliência: O padrão ajuda a tornar o sistema mais resiliente a falhas, pois permite que as transações sejam revertidas de forma consistente em caso de falha em um dos serviços.
+Visibilidade e monitoramento: Como cada serviço emite eventos para indicar seu estado, é mais fácil monitorar e diagnosticar problemas no sistema.
+Flexibilidade e manutenção: O padrão torna o sistema mais flexível, pois permite que novos serviços sejam adicionados ou alterados sem alterar a lógica de negócios existente.
+Em resumo, o padrão Saga Coreografado é usado em aplicações distribuídas e microserviços para garantir a consistência e a integridade das transações, mesmo em um ambiente distribuído e com alta escalabilidade.
