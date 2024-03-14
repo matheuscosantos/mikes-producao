@@ -32,6 +32,7 @@ class SecurityConfig {
                             .policyDirectives("script-src 'self'")
                     }
             }
+            .csrf { csrf -> csrf.disable() }
 
         return http.build()
     }
